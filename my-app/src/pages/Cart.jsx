@@ -1,5 +1,4 @@
-import { Add, Remove } from "@material-ui/icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
@@ -9,6 +8,7 @@ import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
 import { userRequest } from "../requestMethods";
 import { useNavigate } from "react-router-dom";
+import { emptyCart } from "../redux/cartRedux";
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -163,7 +163,7 @@ const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const [stripeToken, setStripeToken] = useState(null);
   const history = useNavigate();
-
+  const dispatch = useDispatch();
   const onToken = (token) => {
     setStripeToken(token);
   };
@@ -180,8 +180,16 @@ const Cart = () => {
           products: cart, });
       } catch {}
     };
-    stripeToken && makeRequest();
-  }, [stripeToken, cart.total, history]);
+    stripeToken && makeRequest() && dispatch(emptyCart());
+  }, [cart, dispatch, stripeToken, cart.total, history]);
+
+  const handleEmptyCart = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(emptyCart())
+    } catch (error) {}
+  }
+  
   return (
     <Container>
       <Navbar />
@@ -194,7 +202,7 @@ const Cart = () => {
             <TopText>Shopping Bag(2)</TopText>
             <TopText>Your Wishlist (0)</TopText>
           </TopTexts>
-          <TopButton type="filled">CHECKOUT NOW</TopButton>
+          <TopButton type="filled" onClick={handleEmptyCart}>EMPTY CART</TopButton>
         </Top>
         <Bottom>
           <Info>
@@ -217,9 +225,7 @@ const Cart = () => {
                 </ProductDetail>
                 <PriceDetail>
                   <ProductAmountContainer>
-                    <Add />
-                    <ProductAmount>{product.quantity}</ProductAmount>
-                    <Remove />
+                      <ProductAmount>Quantity: {product.quantity}</ProductAmount>
                   </ProductAmountContainer>
                   <ProductPrice>
                     $ {product.price * product.quantity}

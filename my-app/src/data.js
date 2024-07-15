@@ -1,7 +1,7 @@
 export const sliderItems = [
     {
       id: 1,
-      img: "https://i.ibb.co/XsdmR2c/1.png",
+      img: "https://cdn.create.vista.com/downloads/51cdce37-35cf-484c-8590-b91a7b0c560b_1024.jpeg",
       title: "SUMMER SALE",
       desc: "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
       bg: "f5fafd",
